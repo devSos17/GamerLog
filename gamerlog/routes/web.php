@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GamesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
+/* Route::view('/','home.index')-> name('home.index'); */
+
+
+// No home
+Route::redirect('/','/login');
+
+// games
+
+Route::resource('games',GamesController::class)
+    ->middleware('auth')
+    ->except(['index']);
+
+
+Auth::routes();
+
+Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])
+    ->middleware('auth')
+    ->name('home');
