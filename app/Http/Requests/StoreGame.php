@@ -24,10 +24,18 @@ class StoreGame extends FormRequest
     public function rules()
     {
         return [
-            'title'=>'required',
+            'title'=>['required','unique:games,title'],
             'clasification'=>'required',
             'console'=>'required',
             'cost'=>'required',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'title.required'=>'All games have names',
+            'cost'=>'Must be a number',
         ];
     }
 }

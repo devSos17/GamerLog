@@ -12,7 +12,7 @@ class CreateGamesTable extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->string('title');
+            $table->string('title')->unique();
 
             // clasification 1 to many
             /* $table->foreign('clasification_id'); */
