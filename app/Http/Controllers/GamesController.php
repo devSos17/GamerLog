@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreGame;
+use App\Mail\NewGameMessage;
 use App\Models\Game;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class GamesController extends Controller
 {
@@ -36,13 +38,18 @@ class GamesController extends Controller
      */
     public function store(StoreGame $request)
     {
-        // Check for data and fill price 
+        // Check for data and fill price
         $data = $request->validated();
         $data['price'] = $data['cost'] * 1.4;
 
         Game::create($data);
 
         $request->session()->flash('status','The game was added!');
+
+        // mandar a viso al admin
+
+        Mail::to('devsos117@gmail.com')
+            ->queue(new NewGameMessage($data));
 
         return redirect()->route('home');
     }
@@ -78,7 +85,7 @@ class GamesController extends Controller
      */
     public function update(StoreGame $request, $id)
     {
-        // Check for data and fill price 
+        // Check for data and fill price
         $game = Game::findOrFail($id);
 
         $data = $request->validated();
