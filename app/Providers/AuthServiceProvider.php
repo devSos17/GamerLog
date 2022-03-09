@@ -25,6 +25,11 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        // Gates
+        // no game modification
+        Gate::define('game-modification', function($user){
+            // admin email
+            return $user->email === "sosantiart117@gmail.com";
+        });
     }
 }

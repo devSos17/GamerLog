@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\ConsoleController;
 use App\Http\Controllers\GamesController;
 use Illuminate\Support\Facades\Route;
+use League\Flysystem\File;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,9 +29,16 @@ Route::resource('games',GamesController::class)
     ->middleware('auth')
     ->except(['index']);
 
+Route::resource('console',ConsoleController::class)
+    ->middleware('auth');
 
 Auth::routes();
 
 Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])
     ->middleware('auth')
     ->name('home');
+
+// Storage hack
+/* $targetFolder = $_SERVER['DOCUMENT_ROOT'] . '/storage/app/public'; */
+/* $linkFolder = $_SERVER['DOCUMENT_ROOT'] . '/public/storage'; */
+/* symlink($targetFolder,$linkFolder); */

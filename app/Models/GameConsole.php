@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Game extends Model
+class GameConsole extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    public function gameConsole()
+    public function games()
     {
-        return $this->belongsTo(GameConsole::class);
+        return $this->hasMany(Game::class);
     }
 
 }

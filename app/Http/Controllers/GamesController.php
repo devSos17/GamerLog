@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\GameSaved;
 use App\Http\Requests\StoreGame;
 use App\Mail\NewGameMessage;
 use App\Models\Game;
+use App\Models\GameConsole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class GamesController extends Controller
 {
@@ -27,7 +30,11 @@ class GamesController extends Controller
      */
     public function create()
     {
-        return view('games.create',['game' => new Game]);
+        $this->authorize('game-modification');
+        return view('games.create',[
+                'game' => new Game,
+                'consoles'=> GameConsole::pluck('name','id'),
+        ]);
     }
 
     /**
@@ -38,15 +45,27 @@ class GamesController extends Controller
      */
     public function store(StoreGame $request)
     {
+        $this->authorize('game-modification');
         // Check for data and fill price
         $data = $request->validated();
         $data['price'] = $data['cost'] * 1.4;
 
-        Game::create($data);
+
+        $image = $request->file('image');
+        if($image){
+            $data['image'] = $image->store('images','public');
+        }
+
+        $game = Game::create($data);
+
+        // Event GameSaved
+        GameSaved::dispatch($game);
+
 
         $request->session()->flash('status','The game was added!');
 
-        // mandar a viso al admin
+        // mandar aviso al admin
+        $data['console'] = GameConsole::find($data['game_console_id'])->name;
 
         Mail::to('devsos117@gmail.com')
             ->queue(new NewGameMessage($data));
@@ -73,7 +92,11 @@ class GamesController extends Controller
      */
     public function edit($id)
     {
-        return view('games.edit', ['game' => Game::findOrFail($id)]);
+        $this->authorize('game-modification');
+        return view('games.edit',[
+                'game' => Game::with('gameConsole')->findOrFail($id),
+                'consoles'=> GameConsole::pluck('name','id'),
+        ]);
     }
 
     /**
@@ -85,14 +108,27 @@ class GamesController extends Controller
      */
     public function update(StoreGame $request, $id)
     {
+        $this->authorize('game-modification');
         // Check for data and fill price
         $game = Game::findOrFail($id);
 
         $data = $request->validated();
         $data['price'] = $data['cost'] * 1.4;
 
+        // image validation
+        if($game->image){
+            $image = $request->file('image');
+            if($image){
+                Storage::delete($game->image);
+                $data['image'] = $image->store('images','public');
+            }
+        }
+
         $game->fill($data);
         $game->save();
+
+        // Event gameSaved
+        GameSaved::dispatch($game);
 
         $request->session()->flash('status','The game was updated!');
 
@@ -107,7 +143,9 @@ class GamesController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        $this->authorize('game-modification');
         $game = Game::findOrFail($id);
+        Storage::delete($game->image);
         $game->delete();
 
         $request->session()->flash('status','Game Deleted!');

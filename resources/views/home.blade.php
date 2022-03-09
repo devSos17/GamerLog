@@ -31,18 +31,20 @@
 								</a>
 							</th>
 							<th scope="col">{{ $game->clasification }}</th>
-							<th scope="col">{{ $game->console }}</th>
+                            <th scope="col">{{ $game->game_console_id }}</th>
 							<th scope="col">${{ $game->price }}</th>
-							<th scope="col" style="display:flex;">
-								<form method="POST" action="{{ route('games.destroy',$game) }}">
-									@csrf @method('DELETE')
-									<button class='btn-danger'>x</button>
-								</form>
-								<form method="GET" action="{{ route('games.edit',$game) }}">
-									@csrf
-									<button class="btn-warning">E</button>
-								</form>
-							</th>
+                            @can('game-modification')
+                                <th scope="col" style="display:flex;">
+                                    <form class="form-delete" method="POST" action="{{ route('games.destroy',$game) }}">
+                                        @csrf @method('DELETE')
+                                        <button class='btn-danger'>x</button>
+                                    </form>
+                                    <form method="GET" action="{{ route('games.edit',$game) }}">
+                                        @csrf
+                                        <button class="btn-warning">E</button>
+                                    </form>
+                                </th>
+                            @endcan
 						</tr>
 						@empty
 					</tbody>
@@ -51,7 +53,9 @@
 				@endforelse
 				</tbody>
 				</table>
-				<a href="{{ route('games.create') }}" class="btn btn-primary">+</a>
+                @can('game-modification')
+                    <a href="{{ route('games.create') }}" class="btn btn-primary">+</a>
+                @endcan
 			</div>
 		</div>
 	</div>

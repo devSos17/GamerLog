@@ -18,11 +18,6 @@ class CreateGamesTable extends Migration
             /* $table->foreign('clasification_id'); */
             $table->string('clasification');
 
-            // console 1 to many
-            /* $table->foreign('console_id'); */
-            /* $table->string('console_id'); */
-            $table->string('console');
-
             $table->integer('cost');
             $table->integer('price');
         });

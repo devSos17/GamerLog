@@ -7,12 +7,9 @@
 	<div class="card">
 		<div class="card-body">
 			<h2 class="card-title center">Edit</h2>
-            <form
-                enctype="multipart/form-data"
-                action="{{ route('games.update',$game) }}"
-                method="POST">
+			<form action="{{ route('console.update',$console) }}" method="POST">
 				@csrf @method('PUT')
-				@include('games._form')
+				@include('console._form')
 				<button type="submit" class="btn btn-warning">Update</button>
 			</form>
 			</div>

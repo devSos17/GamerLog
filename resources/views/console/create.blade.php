@@ -7,12 +7,9 @@
 	<div class="card">
 		<div class="card-body">
 			<h2 class="card-title center">New Game</h2>
-            <form
-                enctype="multipart/form-data"
-                action="{{ route('games.store') }}"
-                method="POST">
+			<form action="{{ route('console.store') }}" method="POST">
 				@csrf
-				@include('games._form')
+				@include('console._form')
 				<button type="submit" class="btn btn-success">Create</button>
 			</form>
 

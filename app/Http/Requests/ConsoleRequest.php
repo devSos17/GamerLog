@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Models\GameConsole;
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreGame extends FormRequest
+class ConsoleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,21 +27,11 @@ class StoreGame extends FormRequest
     public function rules()
     {
         return [
-            'title'=>[
+            'name'=>[
                 'required',
-                Rule::unique('games')->ignore( $this->route('game') ),
+                Rule::unique('game_consoles')->ignore( $this->route('console') ),
             ],
-            'clasification'=>'required',
-            'game_console_id'=>'required',
-            'cost'=>'required',
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'title.required'=>'All games have names',
-            'cost'=>'Must be a number',
+            'brand'=>'required',
         ];
     }
 }

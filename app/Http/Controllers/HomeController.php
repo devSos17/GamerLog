@@ -24,7 +24,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $games = Game::latest()->get();
-        return view('home',['games'=>$games]);
+        return view('home',[
+            'games'=> Game::with('gameConsole')->latest()->get(),
+        ]);
     }
 }
